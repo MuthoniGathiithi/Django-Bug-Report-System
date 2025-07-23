@@ -1,0 +1,124 @@
+{% extends 'bugs/base.html' %}
+
+{% block title %}Report Bug - Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0"><i class="fas fa-plus"></i> Report New Bug</h3>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">
+                    Please provide detailed information about the bug you encountered. 
+                    The more information you provide, the easier it will be to resolve the issue.
+                </p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">
+                            Bug Title <span class="text-danger">*</span>
+                        </label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.title.errors }}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">Provide a clear, concise title that describes the bug.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            Description <span class="text-danger">*</span>
+                        </label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.description.errors }}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Include:
+                            <ul class="small mb-0 mt-1">
+                                <li>Steps to reproduce the bug</li>
+                                <li>Expected behavior vs actual behavior</li>
+                                <li>Environment details (browser, OS, etc.)</li>
+                                <li>Any error messages you received</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.priority.id_for_label }}" class="form-label">
+                            Priority <span class="text-danger">*</span>
+                        </label>
+                        {{ form.priority }}
+                        {% if form.priority.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.priority.errors }}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Priority Guidelines:
+                            <ul class="small mb-0 mt-1">
+                                <li><strong>Critical:</strong> System crashes, data corruption, security issues</li>
+                                <li><strong>High:</strong> Major functionality broken, significant impact</li>
+                                <li><strong>Medium:</strong> Minor functionality issues, workarounds available</li>
+                                <li><strong>Low:</strong> Cosmetic issues, enhancement requests</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-paper-plane"></i> Submit Bug Report
+                        </button>
+                        <a href="{% url 'bug_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tips Section -->
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-lightbulb"></i> Tips for Effective Bug Reports</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-check-circle text-success"></i> Do:</h6>
+                        <ul class="small">
+                            <li>Be specific and detailed</li>
+                            <li>Include step-by-step reproduction</li>
+                            <li>Attach screenshots if helpful</li>
+                            <li>Mention your environment</li>
+                            <li>Use clear, descriptive titles</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-times-circle text-danger"></i> Don't:</h6>
+                        <ul class="small">
+                            <li>Use vague descriptions like "it's broken"</li>
+                            <li>Submit duplicate reports</li>
+                            <li>Mix multiple issues in one report</li>
+                            <li>Forget to check existing reports</li>
+                            <li>Use inappropriate priority levels</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
