@@ -1,0 +1,130 @@
+{% extends 'bugs/base.html' %}
+
+{% block title %}Home - Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto text-center">
+        <div class="hero-section py-5">
+            <h1 class="display-4 text-primary mb-4">
+                <i class="fas fa-bug"></i> Bug Tracking System
+            </h1>
+            <p class="lead mb-4">
+                Report, track, and manage software bugs efficiently. Collaborate with your team to resolve issues faster.
+            </p>
+            
+            {% if not user.is_authenticated %}
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg me-md-2">
+                        <i class="fas fa-user-plus"></i> Get Started
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                </div>
+            {% else %}
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{% url 'bug_list' %}" class="btn btn-primary btn-lg me-md-2">
+                        <i class="fas fa-list"></i> View All Bugs
+                    </a>
+                    <a href="{% url 'submit_bug' %}" class="btn btn-success btn-lg">
+                        <i class="fas fa-plus"></i> Report New Bug
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body">
+                <div class="mb-3">
+                    <i class="fas fa-exclamation-triangle fa-3x text-warning"></i>
+                </div>
+                <h5 class="card-title">Easy Bug Reporting</h5>
+                <p class="card-text">
+                    Submit detailed bug reports with priority levels and comprehensive descriptions.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body">
+                <div class="mb-3">
+                    <i class="fas fa-users fa-3x text-info"></i>
+                </div>
+                <h5 class="card-title">Team Management</h5>
+                <p class="card-text">
+                    Assign bugs to team members and track progress with role-based access control.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body">
+                <div class="mb-3">
+                    <i class="fas fa-chart-line fa-3x text-success"></i>
+                </div>
+                <h5 class="card-title">Progress Tracking</h5>
+                <p class="card-text">
+                    Monitor bug resolution status and get insights through the admin dashboard.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if user.is_authenticated %}
+<!-- Quick Stats for Logged in Users -->
+<div class="row mt-5">
+    <div class="col-12">
+        <h3 class="text-center mb-4">Quick Overview</h3>
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-center">
+                        <i class="fas fa-bug fa-2x mb-2"></i>
+                        <h4>Total Bugs</h4>
+                        <p class="h5">{{ total_bugs|default:0 }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body text-center">
+                        <i class="fas fa-clock fa-2x mb-2"></i>
+                        <h4>Open</h4>
+                        <p class="h5">{{ open_bugs|default:0 }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body text-center">
+                        <i class="fas fa-cogs fa-2x mb-2"></i>
+                        <h4>In Progress</h4>
+                        <p class="h5">{{ in_progress_bugs|default:0 }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body text-center">
+                        <i class="fas fa-check fa-2x mb-2"></i>
+                        <h4>Resolved</h4>
+                        <p class="h5">{{ resolved_bugs|default:0 }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
