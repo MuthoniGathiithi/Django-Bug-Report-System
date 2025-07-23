@@ -1,0 +1,171 @@
+{% extends 'bugs/base.html' %}
+
+{% block title %}{{ bug.title }} - Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'bug_list' %}">All Bugs</a></li>
+            <li class="breadcrumb-item active">Bug #{{ bug.id }}</li>
+        </ol>
+    </nav>
+    
+    {% if user.userprofile.role != 'user' %}
+        <a href="{% url 'update_bug' bug.pk %}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Edit Bug
+        </a>
+    {% endif %}
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Main Bug Information -->
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-start">
+                    <h3 class="mb-0">{{ bug.title }}</h3>
+                    <div class="d-flex flex-column gap-2">
+                        {% if bug.status == 'open' %}
+                            <span class="badge bg-warning fs-6">{{ bug.get_status_display }}</span>
+                        {% elif bug.status == 'in_progress' %}
+                            <span class="badge bg-info fs-6">{{ bug.get_status_display }}</span>
+                        {% elif bug.status == 'resolved' %}
+                            <span class="badge bg-success fs-6">{{ bug.get_status_display }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary fs-6">{{ bug.get_status_display }}</span>
+                        {% endif %}
+                        
+                        {% if bug.priority == 'critical' %}
+                            <span class="badge bg-danger fs-6">{{ bug.get_priority_display }}</span>
+                        {% elif bug.priority == 'high' %}
+                            <span class="badge bg-warning fs-6">{{ bug.get_priority_display }}</span>
+                        {% elif bug.priority == 'medium' %}
+                            <span class="badge bg-info fs-6">{{ bug.get_priority_display }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary fs-6">{{ bug.get_priority_display }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <h5>Description</h5>
+                <div class="bg-light p-3 rounded">
+                    <p class="mb-0" style="white-space: pre-line;">{{ bug.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Bug Metadata -->
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Bug Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <strong>Bug ID:</strong>
+                        <span class="float-end">#{{ bug.id }}</span>
+                    </div>
+                    
+                    <div class="col-12">
+                        <strong>Status:</strong>
+                        <span class="float-end">
+                            {% if bug.status == 'open' %}
+                                <span class="badge bg-warning">{{ bug.get_status_display }}</span>
+                            {% elif bug.status == 'in_progress' %}
+                                <span class="badge bg-info">{{ bug.get_status_display }}</span>
+                            {% elif bug.status == 'resolved' %}
+                                <span class="badge bg-success">{{ bug.get_status_display }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ bug.get_status_display }}</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="col-12">
+                        <strong>Priority:</strong>
+                        <span class="float-end">
+                            {% if bug.priority == 'critical' %}
+                                <span class="badge bg-danger">{{ bug.get_priority_display }}</span>
+                            {% elif bug.priority == 'high' %}
+                                <span class="badge bg-warning">{{ bug.get_priority_display }}</span>
+                            {% elif bug.priority == 'medium' %}
+                                <span class="badge bg-info">{{ bug.get_priority_display }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ bug.get_priority_display }}</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="col-12">
+                        <strong>Submitted by:</strong>
+                        <span class="float-end">
+                            <i class="fas fa-user"></i> {{ bug.submitted_by.get_full_name|default:bug.submitted_by.username }}
+                        </span>
+                    </div>
+                    
+                    <div class="col-12">
+                        <strong>Assigned to:</strong>
+                        <span class="float-end">
+                            {% if bug.assigned_to %}
+                                <i class="fas fa-user-check text-success"></i> {{ bug.assigned_to.get_full_name|default:bug.assigned_to.username }}
+                            {% else %}
+                                <span class="text-muted">Unassigned</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="col-12">
+                        <strong>Created:</strong>
+                        <span class="float-end">
+                            <i class="fas fa-calendar"></i> {{ bug.created_at|date:"M d, Y H:i" }}
+                        </span>
+                    </div>
+                    
+                    <div class="col-12">
+                        <strong>Last Updated:</strong>
+                        <span class="float-end">
+                            <i class="fas fa-clock"></i> {{ bug.updated_at|date:"M d, Y H:i" }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-cogs"></i> Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    {% if user.userprofile.role != 'user' %}
+                        <a href="{% url 'update_bug' bug.pk %}" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Edit Bug
+                        </a>
+                    {% endif %}
+                    
+                    {% if user == bug.submitted_by %}
+                        <button class="btn btn-outline-info" disabled>
+                            <i class="fas fa-user"></i> You submitted this bug
+                        </button>
+                    {% endif %}
+                    
+                    {% if user == bug.assigned_to %}
+                        <button class="btn btn-outline-success" disabled>
+                            <i class="fas fa-user-check"></i> Assigned to you
+                        </button>
+                    {% endif %}
+                    
+                    <a href="{% url 'bug_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
